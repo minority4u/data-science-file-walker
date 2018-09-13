@@ -2,6 +2,7 @@ from scipy.io import wavfile
 import json
 
 import matplotlib as mpl
+
 mpl.use('TkAgg')
 import matplotlib.pyplot as plt
 
@@ -10,6 +11,7 @@ import logging
 import os
 import app.Singelton_stats as stats
 import SimpleITK as sitk
+from app.helper.Dicomhelper import myshow, myshow3d
 
 
 class Basefile:
@@ -40,7 +42,7 @@ class Basefile:
 
     def update(self, dir):
         """
-        Update the directory where this wav files should be saved to
+        Update the directory
         :param dir:
         :return:
         """
@@ -70,11 +72,11 @@ class Basefile:
         # free memory, close fig
         plt.close(fig)
 
+
 class Dicomfile(Basefile):
     file_typ = '.dcm'
 
     def __init__(self, dir_name='./', filename='test.dcm', destination='./dest'):
-
         """
         Opens a dicom file from the given directory
         :param dir_name:
@@ -89,21 +91,40 @@ class Dicomfile(Basefile):
         Call here all functions you would like to perform
         :return:
         """
-        self.describe()
-        self.__print3d__()
-
+        #self.describe()
+        #self.__print3d__()
+        self.__segmentation_test1__()
 
     def __load_file__(self, filename):
-        #print('{} method not implemented'.format(self.__load_file__.__name__))
+        """
+        This function uses the simpleITK library for dicom image loading
+        :param filename:
+        :return:
+        """
         return sitk.ReadImage(filename)
 
     def save(self):
-        print('{} method not implemented'.format(self.save.__name__))
+        """
+        Use simpleITK to write the current dicom file to disk
+        :return:
+        """
+        sitk.WriteImage(self.img, os.path.join(self.destination, self.filename))
 
     def describe(self):
-
+        """
+        # Simple function to describe a dicom image
+        # writes all statistics to the singelton file for later printing and logging
+        :return:
+        """
         self.stats = {}
         image = self.img
+
+        # Get all Metadata for a dicom file
+        # metadata = {}
+        # for key in image.GetMetaDataKeys():
+        #     metadata[key] = image.GetMetaData(key)
+        # logging.info(metadata)
+        # stats.files.append(metadata)
 
         # create a dictionary with all important file meta data
         self.stats['filetyp'] = self.file_typ
@@ -122,13 +143,41 @@ class Dicomfile(Basefile):
         Creates an matplotlib figure and save it to disk
         :return:
         """
-        #plt.imshow(sitk.GetArrayViewFromImage(self.img[:,:,0]))
-        #plt.title(self.filename)
+        # plt.imshow(sitk.GetArrayViewFromImage(self.img[:,:,0]))
+        # plt.title(self.filename)
         # self.__save_plot__(plt.gcf(), self.destination, self.filename)
 
-        from app.helper.Dicomhelper import myshow, myshow3d
-        fig = myshow3d(img = self.img, title = self.filename)
+
+        fig = myshow3d(img=self.img, title=self.filename)
         self.__save_plot__(fig, self.destination, self.filename)
+
+    def __segmentation_test1__(self):
+        """
+        Testfunction for segmentations
+        :return:
+        """
+        # To visualize the labels image in RGB with needs a image with 0-255 range
+        img_255 = sitk.Cast(sitk.RescaleIntensity(self.img), sitk.sitkUInt8)
+
+        # Threshold segmentation
+        #seg = self.img > 100
+        #fig = myshow(sitk.LabelOverlay(img_255, seg), "Basic Thresholding")
+        # self.__save_plot__(fig, self.destination, self.filename)
+
+        # histogram based segmentation
+        otsu_filter = sitk.OtsuThresholdImageFilter()
+        otsu_filter.SetInsideValue(0)
+        otsu_filter.SetOutsideValue(1)
+        seg = otsu_filter.Execute(self.img)
+        fig = myshow(sitk.LabelOverlay(img_255, seg), "Otsu Thresholding")
+        self.__save_plot__(fig, self.destination, self.filename)
+
+        # Region Growing Segmentation
+        seed = (132, 142, 96)
+        seg = sitk.Image(self.img.GetSize(), sitk.sitkUInt8)
+        seg.CopyInformation(self.img)
+        seg = sitk.ConnectedThreshold(self.img, seedList=[seed], lower=100, upper=190)
+        myshow(sitk.LabelOverlay(img_255, seg), "Connected Threshold")
 
 
 
@@ -179,7 +228,7 @@ class Wavefile(Basefile):
         # self.trim()
         # describe the trimmed wave-file
         self.describe()
-        #self.plot_and_save_wav_file()
+        # self.plot_and_save_wav_file()
 
     def save(self):
         """
@@ -341,8 +390,8 @@ class JsonFile(Basefile):
         self.describe()
 
     def describe(self):
-        #from pprint import pprint
-        #pprint(self.data)
+        # from pprint import pprint
+        # pprint(self.data)
         for file, text_json in self.data.items():
             # calc statistics
             sentence = self.__extract_str__(text_json)
@@ -367,11 +416,12 @@ class JsonFile(Basefile):
 
 
 def tests():
-    dFile = Dicomfile(dir_name="testdata", filename="test.dcm",destination="destination/")
+    dFile = Dicomfile(dir_name="testdata", filename="test.dcm", destination="destination/")
 
 
 if __name__ == '__main__':
     from app.Setup import *
+
     # define a central logger
     logger = Console_and_file_logger('Files_tests')
     tests()

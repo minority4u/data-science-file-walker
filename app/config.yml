@@ -1,3 +1,3 @@
 ---
-dir_to_src: "./testdata/"
-dir_to_dest: "./destination/"
+dir_to_src: "./singlefile/"
+dir_to_dest: "./segmentation_test/"
