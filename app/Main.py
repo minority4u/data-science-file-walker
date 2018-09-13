@@ -1,6 +1,6 @@
 from app.IO import FileWalker
 from app.Files import Wavefile, JsonFile, Dicomfile
-from app.Setup import *
+from app.Setup import Console_and_file_logger
 from app.Singelton_stats import *
 from argparse import ArgumentParser
 import yaml
@@ -26,14 +26,13 @@ def main(params):
 
 
 if __name__ == '__main__':
-    # define a central logger
-    logger = Console_and_file_logger('FileWalker')
 
     # Define argument parser
     parser = ArgumentParser()
 
     # define arguments and default values to parse
     parser.add_argument("--config", "-c", help="Define the path to config.yml", default="config.yml", required=False)
+
     args = parser.parse_args()
 
     # Make sure the config exists
@@ -48,6 +47,8 @@ if __name__ == '__main__':
     # Make sure source folder exists
     assert os.path.exists(params["dir_to_src"]), "Path to src {} does not exist!".format(params["dir_to_src"])
 
+    # define a central logger
+    Console_and_file_logger('FileWalker')
 
     # start the script
     main(params)

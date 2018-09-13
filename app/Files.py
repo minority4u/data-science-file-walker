@@ -90,6 +90,7 @@ class Dicomfile(Basefile):
         :return:
         """
         self.describe()
+        self.__print3d__()
 
 
     def __load_file__(self, filename):
@@ -116,6 +117,18 @@ class Dicomfile(Basefile):
         # append it to the stats singelton for later usage
         stats.files.append(self.stats)
 
+    def __print3d__(self):
+        """
+        Creates an matplotlib figure and save it to disk
+        :return:
+        """
+        #plt.imshow(sitk.GetArrayViewFromImage(self.img[:,:,0]))
+        #plt.title(self.filename)
+        # self.__save_plot__(plt.gcf(), self.destination, self.filename)
+
+        from app.helper.Dicomhelper import myshow, myshow3d
+        fig = myshow3d(img = self.img, title = self.filename)
+        self.__save_plot__(fig, self.destination, self.filename)
 
 
 
