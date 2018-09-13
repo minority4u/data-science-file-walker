@@ -1,5 +1,6 @@
 import logging
 import numpy as np
+from app.Setup import *
 
 # Modul treated as Singelton to summarize all statistics in one file
 
@@ -20,9 +21,12 @@ Distinct_words = 0
 ## helpers
 duration_list = []
 
-def log_statistics():
+# new way for saving statistcs per file
+files = []
+
+def log_wave_statistics():
     """
-    log the FileWalker data to console and file
+    log the Wave-FileWrapper statistics to console and file
     :return:
     """
     logging.info('Wave-Files: {}'.format(Wav_Files))
@@ -40,3 +44,22 @@ def log_statistics():
     logging.info('Number of distincts words: {}'.format(Distinct_words))
     logging.debug('Distincts words: {}'.format(Distinct))
 
+def log_stats():
+    """
+    Log all statistics submitted in files
+    This is a very generic statistic log
+    :return:
+    """
+    for idx, file_dict in enumerate(files):
+        logging.info('File: {}, {}'.format(idx, file_dict))
+
+    logging.info('Action performed on {} files.'.format(len(files)))
+
+def tests():
+    log_stats()
+    pass
+
+
+if __name__ == '__main__':
+    logger = Console_and_file_logger('Statistics_tests')
+    tests()

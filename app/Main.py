@@ -8,7 +8,6 @@ import yaml
 
 def main(params):
 
-
     start_time = time()
 
     # fw = FileWalker(Wavefile)
@@ -18,9 +17,11 @@ def main(params):
     # fw.recursive_file_action(params["dir_to_src"], params["dir_to_dest"])
 
     fw = FileWalker(Dicomfile)
-    fw.recursive_file_action(params["dir_to_src"], params["dir_to_dest"])
+    fw.perform_action(params["dir_to_src"], params["dir_to_dest"])
 
-    #log_statistics()
+    log_stats()
+
+    #log_wave_statistics()
     logging.info('FileWalker finished after {:0.3f} seconds'.format(time() - start_time))
 
 
@@ -30,22 +31,21 @@ if __name__ == '__main__':
 
     # Define argument parser
     parser = ArgumentParser()
-    cwd = os.getcwd()
-    print(cwd)
 
-    parser.add_argument("--src", help="Define a data source directory", default="./")
-    parser.add_argument("--dest", help="Define a data destination directory", default="./transformed/")
+    # define arguments and default values to parse
     parser.add_argument("--config", "-c", help="Define the path to config.yml", default="config.yml", required=False)
     args = parser.parse_args()
 
-    # make sure the config exists
-    assert os.path.exists(args.config), "Config does not exist!"
+    # Make sure the config exists
+    assert os.path.exists(args.config), "Config does not exist!, Please create a config.yml in root or set the path with --config."
 
-    # load config
+    # Load config
     params = yaml.load(open(args.config, "r"))
-    assert {"dir_to_src", "dir_to_dest"} <= set(params.keys()), "Configuration is incomplete!"
 
-    # Assertions
+    # Make sure that source and destination are set
+    assert {"dir_to_src", "dir_to_dest"} <= set(params.keys()), "Configuration is incomplete! Please define dir_to_src and dir_to_dest in config.yml"
+
+    # Make sure source folder exists
     assert os.path.exists(params["dir_to_src"]), "Path to src {} does not exist!".format(params["dir_to_src"])
 
 

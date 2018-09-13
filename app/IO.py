@@ -8,7 +8,7 @@ class FileWalker:
     def __init__(self, file_wrapper):
         self.file_wrapper = file_wrapper
 
-    def recursive_file_action(self, current_src_dir='./', current_dest_dir=''):
+    def perform_action(self, current_src_dir='./', current_dest_dir=''):
         """
         Calls the recursive file walker and runs the action method on each found object
         If no destination is given all transformed files will be stored within the folder 'transformed'
@@ -61,17 +61,18 @@ class FileWalker:
 
 
 
-def tests():
+def test_jsonfiles():
     fw = FileWalker(Wavefile)
-    fw.recursive_file_action("./new_data/", "./dest_data/")
-    log_statistics()
+    fw.perform_action("./new_data/", "./dest_data/")
+    log_wave_statistics()
 
 def test_jsonfiles():
     fw = FileWalker(JsonFile)
-    fw.recursive_file_action("./new_data/", "./dest_data/")
-    log_statistics()
+    fw.perform_action("./new_data/", "./dest_data/")
+    log_wave_statistics()
+
 
 if __name__ == '__main__':
     logger = Console_and_file_logger(os.path.basename(__file__), "./dest_data/")
-    #tests()
+    #test_jsonfiles()
     test_jsonfiles()

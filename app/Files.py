@@ -84,7 +84,11 @@ class Dicomfile(Basefile):
         self.img = self.__load_file__(os.path.join(dir_name, filename))
 
     def action(self):
-        #print('{} method not implemented'.format(self.action.__name__))
+        """
+        Single entry point for the FileWalker
+        Call here all functions you would like to perform
+        :return:
+        """
         self.describe()
 
 
@@ -96,12 +100,21 @@ class Dicomfile(Basefile):
         print('{} method not implemented'.format(self.save.__name__))
 
     def describe(self):
-        #print('{} method not implemented'.format(self.describe.__name__))
 
+        self.stats = {}
         image = self.img
-        logging.debug('Image size: {}'.format(image.GetSize()))
-        logging.debug('Image origin: {}'.format(image.GetOrigin()))
-        logging.debug('Image spacing: {}'.format( image.GetSpacing()))
+
+        # create a dictionary with all important file meta data
+        self.stats['filetyp'] = self.file_typ
+        self.stats['file'] = self.filename
+        self.stats['src_path'] = self.dir
+        self.stats['dimension'] = image.GetDimension()
+        self.stats['size'] = image.GetSize()
+        self.stats['origin'] = image.GetOrigin()
+        self.stats['spacing'] = image.GetSpacing()
+
+        # append it to the stats singelton for later usage
+        stats.files.append(self.stats)
 
 
 

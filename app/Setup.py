@@ -12,6 +12,7 @@ class Console_and_file_logger():
         :param logfile_name:
         :param log_dir:
         """
+
         # Define the general formatting schema
         formatter = logging.Formatter('%(asctime)s %(levelname)s %(message)s')
         logger = logging.getLogger()
@@ -35,8 +36,14 @@ class Console_and_file_logger():
         logger.addHandler(hdlr_console)
         logger.setLevel(logging.DEBUG)
 
+        cwd = os.getcwd()
+        print('Working directory: {}.'.format(cwd))
         print('Log dir: ' + log_dir)
-        logging.info('Starts ' + logfile_name)
+
+        logging.info('{} {} {}'.format('--' * 10, 'Start', '--' * 10))
+        logging.info('Filename: {}'.format(logfile_name))
+        logging.info('Log directory: {}'.format(log_dir))
+
 
 if __name__ == "__main__":
     logger = Console_and_file_logger(os.path.basename(__file__))
