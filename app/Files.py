@@ -19,11 +19,13 @@ class Basefile:
 
     def __init__(self, dir_name='./', filename='test.wav', destination='./dest'):
         """
-        Opens a wav file from the given directory
+        Opens a file from the given directory
         :param dir_name:
         :param filename:
+        :param destination:
         """
-        logging.debug('Trying to open {0}'.format(os.path.join(dir_name, filename)))
+        logging.debug('Trying to open: {0}'.format(os.path.join(dir_name, filename)))
+        logging.debug('Current Destination path: {0}'.format(os.path.join(destination, filename)))
         self.dir = dir_name
         self.filename = filename
         self.destination = destination
@@ -60,14 +62,23 @@ class Basefile:
             os.makedirs(file_path)
 
     def __save_plot__(self, fig, path, filename=''):
+        """
+        Saves an matplotlib figure to the given path + filename
+        If the figure exists, ad a number at the end and increase it
+        as long as there is already an image with this name
+        :param fig:
+        :param path:
+        :param filename:
+        :return:
+        """
         self.__ensure_dir__(path)
         i = 0
         while True:
             i += 1
             newname = '{}{:d}.png'.format(filename + '_', i)
-            if os.path.exists(path + newname):
+            if os.path.exists(os.path.join(path , newname)):
                 continue
-            fig.savefig(path + newname)
+            fig.savefig(os.path.join(path , newname))
             break
         # free memory, close fig
         plt.close(fig)
@@ -81,6 +92,7 @@ class Dicomfile(Basefile):
         Opens a dicom file from the given directory
         :param dir_name:
         :param filename:
+        :param destination:
         """
         super(Dicomfile, self).__init__(dir_name, filename, destination)
         self.img = self.__load_file__(os.path.join(dir_name, filename))
@@ -92,8 +104,8 @@ class Dicomfile(Basefile):
         :return:
         """
         #self.describe()
-        #self.__print3d__()
-        self.__segmentation_test1__()
+        self.__print3d__()
+        #self.__segmentation_test1__()
 
     def __load_file__(self, filename):
         """
