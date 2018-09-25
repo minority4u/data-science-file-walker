@@ -25,7 +25,7 @@ class Basefile:
         :param destination:
         """
         logging.debug('Trying to open: {0}'.format(os.path.join(dir_name, filename)))
-        logging.debug('Current Destination path: {0}'.format(os.path.join(destination, filename)))
+        #logging.debug('Current Destination path: {0}'.format(os.path.join(destination, filename)))
         self.dir = dir_name
         self.filename = filename
         self.destination = destination
@@ -103,9 +103,10 @@ class Dicomfile(Basefile):
         Call here all functions you would like to perform
         :return:
         """
-        #self.describe()
-        self.__print3d__()
+        self.describe()
+        #self.__print3d__()
         #self.__segmentation_test1__()
+        #self.save()
 
     def __load_file__(self, filename):
         """
@@ -120,6 +121,7 @@ class Dicomfile(Basefile):
         Use simpleITK to write the current dicom file to disk
         :return:
         """
+        self.__ensure_dir__(self.destination)
         sitk.WriteImage(self.img, os.path.join(self.destination, self.filename))
 
     def describe(self):
@@ -149,6 +151,9 @@ class Dicomfile(Basefile):
 
         # append it to the stats singelton for later usage
         stats.files.append(self.stats)
+
+        if self.stats['size'] == (256, 256, 1):
+            self.save()
 
     def __print3d__(self):
         """

@@ -33,6 +33,9 @@ class FileWalker:
         logging.info('Current src directory: {0}'.format(current_src_dir))
         logging.info('Current dest directory: {0}'.format(current_dest_dir))
 
+        # static destination-folder
+        current_dest_dir = 'moved_0706_192_168_1'
+
         # for every file in this sub-folder
         for filename in os.listdir(current_src_dir):
             # perform action only on the given file ending
