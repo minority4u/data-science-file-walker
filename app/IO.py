@@ -7,7 +7,7 @@ from app.Setup import *
 class FileWalker:
     open_files = []
 
-    def __init__(self, file_wrapper, src_dir='./', dest_dir=''):
+    def __init__(self, file_wrapper, src_dir='./', dest_dir='', static_destination=False):
         """
         Calls the recursive file walker and runs the action method on each found object
         If no destination is given all transformed files will be stored within the folder 'transformed'
@@ -16,8 +16,10 @@ class FileWalker:
         :return:
         """
         self.file_wrapper = file_wrapper
-        if dest_dir == '':
-            dest_dir = './transformed' + src_dir
+        self.static_destination = static_destination
+
+        if static_destination:
+            self.destination = dest_dir
 
         self._recursive_file_action(src_dir, dest_dir)
 
@@ -47,7 +49,8 @@ class FileWalker:
         logging.info('Current dest directory: {0}'.format(current_dest_dir))
 
         # static destination-folder
-        current_dest_dir = 'moved_0706_192_168_1'
+        if self.static_destination:
+            current_dest_dir = self.destination
 
         # for every file in this sub-folder
         for filename in os.listdir(current_src_dir):

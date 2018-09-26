@@ -56,7 +56,6 @@ class Basefile:
         :param file_path:
         :return:
         """
-        logging.debug('Trying to save to {0}'.format(file_path))
         if not os.path.exists(file_path):
             logging.debug('Creating directory {}'.format(file_path))
             os.makedirs(file_path)
@@ -71,6 +70,7 @@ class Basefile:
         :param filename:
         :return:
         """
+        logging.debug('Trying to save to {0}'.format(path))
         self.__ensure_dir__(path)
         i = 0
         while True:
@@ -80,6 +80,7 @@ class Basefile:
                 continue
             fig.savefig(os.path.join(path , newname))
             break
+        logging.debug('Image saved: {}'.format(os.path.join(path, newname)))
         # free memory, close fig
         plt.close(fig)
 
@@ -103,7 +104,14 @@ class Dicomfile(Basefile):
         Call here all functions you would like to perform
         :return:
         """
+
+
         self.describe()
+
+        if self.stats['size'] == (192, 168, 1):
+            logging.debug('saving')
+            self.save()
+
         #self.__print3d__()
         #self.__segmentation_test1__()
         #self.save()
@@ -126,7 +134,7 @@ class Dicomfile(Basefile):
 
     def describe(self):
         """
-        # Simple function to describe a dicom image
+        # Describe a dicom image
         # writes all statistics to the singelton file for later printing and logging
         :return:
         """
@@ -149,11 +157,8 @@ class Dicomfile(Basefile):
         self.stats['origin'] = image.GetOrigin()
         self.stats['spacing'] = image.GetSpacing()
 
-        # append it to the stats singelton for later usage
+        # append the file statistics to the stats singelton for later usage
         stats.files.append(self.stats)
-
-        if self.stats['size'] == (256, 256, 1):
-            self.save()
 
     def __print3d__(self):
         """

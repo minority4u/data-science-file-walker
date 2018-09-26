@@ -11,15 +11,14 @@ def main(params):
     start_time = time()
 
     # fw = FileWalker(Wavefile, params["dir_to_src"], params["dir_to_dest"])
-
     # fw = FileWalker(JsonFile, params["dir_to_src"], params["dir_to_dest"])
+    #log_wave_statistics()
 
-
-    fw = FileWalker(Dicomfile, params["dir_to_src"], params["dir_to_dest"])
+    fw = FileWalker(Dicomfile, params["dir_to_src"], params["dir_to_dest"], static_destination=False)
 
     log_stats()
 
-    #log_wave_statistics()
+
     logging.info('FileWalker finished after {:0.3f} seconds'.format(time() - start_time))
 
 
