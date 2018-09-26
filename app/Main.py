@@ -10,14 +10,12 @@ def main(params):
 
     start_time = time()
 
-    # fw = FileWalker(Wavefile)
-    # fw.recursive_file_action(params["dir_to_src"], params["dir_to_dest"])
-    #
-    # fw = FileWalker(JsonFile)
-    # fw.recursive_file_action(params["dir_to_src"], params["dir_to_dest"])
+    # fw = FileWalker(Wavefile, params["dir_to_src"], params["dir_to_dest"])
 
-    fw = FileWalker(Dicomfile)
-    fw.perform_action(params["dir_to_src"], params["dir_to_dest"])
+    # fw = FileWalker(JsonFile, params["dir_to_src"], params["dir_to_dest"])
+
+
+    fw = FileWalker(Dicomfile, params["dir_to_src"], params["dir_to_dest"])
 
     log_stats()
 

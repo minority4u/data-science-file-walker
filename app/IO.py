@@ -5,8 +5,21 @@ from app.Setup import *
 
 
 class FileWalker:
-    def __init__(self, file_wrapper):
+    open_files = []
+
+    def __init__(self, file_wrapper, src_dir='./', dest_dir=''):
+        """
+        Calls the recursive file walker and runs the action method on each found object
+        If no destination is given all transformed files will be stored within the folder 'transformed'
+        :param src_dir:
+        :param dest_dir:
+        :return:
+        """
         self.file_wrapper = file_wrapper
+        if dest_dir == '':
+            dest_dir = './transformed' + src_dir
+
+        self._recursive_file_action(src_dir, dest_dir)
 
     def perform_action(self, current_src_dir='./', current_dest_dir=''):
         """
@@ -45,7 +58,7 @@ class FileWalker:
                     wrapped_file = self.file_wrapper(current_src_dir, filename, current_dest_dir)
                     # perform the action method defined in the file_wrapper class
                     # save the new wave file to the destination folder defined in settings.DIR_TO_DEST
-                    wrapped_file.action()
+                    self.open_files.append(wrapped_file.action())
                 except Exception as e:
                     logging.error('Error with file: {} in directory: {}'.format(filename, current_src_dir))
                     logging.error(e)
@@ -58,16 +71,16 @@ class FileWalker:
             # ignore all other files
             else:
                 pass
-                #logging.info('Skip file {} '.format(os.path.join(current_src_dir, filename)))
+                # logging.info('Skip file {} '.format(os.path.join(current_src_dir, filename)))
 
         logging.info('Action performed in sub-directory {} done in {:0.3f}s'.format(current_src_dir, time() - t1))
-
 
 
 def test_jsonfiles():
     fw = FileWalker(Wavefile)
     fw.perform_action("./new_data/", "./dest_data/")
     log_wave_statistics()
+
 
 def test_jsonfiles():
     fw = FileWalker(JsonFile)
@@ -77,5 +90,5 @@ def test_jsonfiles():
 
 if __name__ == '__main__':
     logger = Console_and_file_logger(os.path.basename(__file__), "./dest_data/")
-    #test_jsonfiles()
+    # test_jsonfiles()
     test_jsonfiles()
