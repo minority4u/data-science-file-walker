@@ -14,9 +14,9 @@ def main(params):
     # fw = FileWalker(JsonFile, params["dir_to_src"], params["dir_to_dest"])
     #log_wave_statistics()
 
-    fw = FileWalker(Dicomfile, params["dir_to_src"], params["dir_to_dest"], static_destination=False)
+    fw = FileWalker(file_wrapper=Dicomfile, src_dir=params["dir_to_src"], dest_dir=params["dir_to_dest"], static_destination=True)
 
-    log_stats()
+    fw.log_stats()
 
 
     logging.info('FileWalker finished after {:0.3f} seconds'.format(time() - start_time))

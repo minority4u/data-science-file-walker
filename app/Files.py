@@ -15,7 +15,8 @@ from app.helper.Dicomhelper import myshow, myshow3d
 
 
 class Basefile:
-    file_typ = '.basefile'
+
+    file_type = '.basefile'
 
     def __init__(self, dir_name='./', filename='test.wav', destination='./dest'):
         """
@@ -25,10 +26,13 @@ class Basefile:
         :param destination:
         """
         logging.debug('Trying to open: {0}'.format(os.path.join(dir_name, filename)))
-        #logging.debug('Current Destination path: {0}'.format(os.path.join(destination, filename)))
+        self.stats = {}
+        self.stats['filetyp'] = self.__class__.file_type
         self.dir = dir_name
         self.filename = filename
         self.destination = destination
+
+
 
     def action(self):
         print('{} method not implemented'.format(self.action.__name__))
@@ -95,7 +99,9 @@ class Dicomfile(Basefile):
         :param filename:
         :param destination:
         """
+        logging.debug('dicomfile init')
         super(Dicomfile, self).__init__(dir_name, filename, destination)
+        self.stats['filetyp'] = self.__class__.file_type
         self.img = self.__load_file__(os.path.join(dir_name, filename))
 
     def action(self):
@@ -105,16 +111,15 @@ class Dicomfile(Basefile):
         :return:
         """
 
-
         self.describe()
 
+        # save the dcom file if the dimensions fit together
         if self.stats['size'] == (192, 168, 1):
             logging.debug('saving')
             self.save()
 
+        return self
         #self.__print3d__()
-        #self.__segmentation_test1__()
-        #self.save()
 
     def __load_file__(self, filename):
         """
@@ -234,6 +239,7 @@ class Wavefile(Basefile):
         :param filename:
         """
         super(Wavefile, self).__init__(dir_name, filename, destination)
+        self.stats['filetyp'] = self.__class__.file_type
         self.fs, self.data = self.__load_file__(os.path.join(dir_name, filename))
 
     def action(self, destination='./transformed/'):
@@ -406,6 +412,7 @@ class JsonFile(Basefile):
         :param filename:
         """
         super(JsonFile, self).__init__(dir_name, filename, destination)
+        self.stats['filetyp'] = self.__class__.file_type
         self.data = self.__load_file__(os.path.join(dir_name, filename))
 
     def action(self):

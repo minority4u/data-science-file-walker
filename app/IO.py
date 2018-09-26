@@ -77,6 +77,20 @@ class FileWalker:
                 # logging.info('Skip file {} '.format(os.path.join(current_src_dir, filename)))
 
         logging.info('Action performed in sub-directory {} done in {:0.3f}s'.format(current_src_dir, time() - t1))
+        logging.info('Action performed on {} files'.format(len(self.open_files)))
+
+    def log_stats(self):
+        """
+        Log all statistics submitted in files
+        This is a very generic statistic log
+        :return:
+        """
+        if self.open_files:
+            for idx, file in enumerate(self.open_files):
+                logging.info('File: {}, {}'.format(idx, file.stats))
+        else:
+            logging.info('No files captured, maybe the action method from the file walker doesnt return self')
+
 
 
 def test_jsonfiles():
