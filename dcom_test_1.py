@@ -4,10 +4,6 @@ from app.IO import FileWalker
 from app.Setup import Console_and_file_logger
 
 
-
-
-
-
 def move_dicom():
     """
     demo usage of the file walker
@@ -27,16 +23,16 @@ def move_dicom():
 
         def __init__(self, dir_name='./', filename='test.dcm', destination='./dest'):
             super(MyDicomfile, self).__init__(dir_name, filename, destination)
-            self.stats['filetyp'] = self.__class__.file_type
+            self.stats['filetype'] = self.__class__.file_type
 
         def action(self):
             logging.info('action performed')
             return self
 
-    fw = FileWalker(MyDicomfile, 'testdata/input', 'testdata/output/test123')
+    fw = FileWalker(MyDicomfile, 'testdata/input/multifile', 'testdata/output/test123')
     fw.log_stats()
 
 
 if __name__ == '__main__':
-    Console_and_file_logger('my_test_1')
+    logger = Console_and_file_logger('my_test_1')
     move_dicom()

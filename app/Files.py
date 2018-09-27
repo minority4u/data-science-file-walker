@@ -27,7 +27,7 @@ class Basefile:
         """
         logging.debug('Trying to open: {0}'.format(os.path.join(dir_name, filename)))
         self.stats = {}
-        self.stats['filetyp'] = self.__class__.file_type
+        self.stats['filetype'] = self.__class__.file_type
         self.dir = dir_name
         self.filename = filename
         self.destination = destination
@@ -90,7 +90,7 @@ class Basefile:
 
 
 class Dicomfile(Basefile):
-    file_typ = '.dcm'
+    file_type = '.dcm'
 
     def __init__(self, dir_name='./', filename='test.dcm', destination='./dest'):
         """
@@ -101,7 +101,7 @@ class Dicomfile(Basefile):
         """
         logging.debug('dicomfile init')
         super(Dicomfile, self).__init__(dir_name, filename, destination)
-        self.stats['filetyp'] = self.__class__.file_type
+        self.stats['filetype'] = self.__class__.file_type
         self.img = self.__load_file__(os.path.join(dir_name, filename))
 
     def action(self):
@@ -154,7 +154,7 @@ class Dicomfile(Basefile):
         # stats.files.append(metadata)
 
         # create a dictionary with all important file meta data
-        self.stats['filetyp'] = self.file_typ
+        self.stats['filetyp'] = self.file_type
         self.stats['file'] = self.filename
         self.stats['src_path'] = self.dir
         self.stats['dimension'] = image.GetDimension()
@@ -209,7 +209,7 @@ class Dicomfile(Basefile):
 
 
 class Wavefile(Basefile):
-    file_typ = '.wav'
+    file_type = '.wav'
     # WavFile settings
     # START_DELTA defines the necessary difference between two bins to recognize the beginning
     # END_DELTA defines the necessary difference between two bins to recognize the end
@@ -403,7 +403,7 @@ class Wavefile(Basefile):
 
 
 class JsonFile(Basefile):
-    file_typ = '.json'
+    file_type = '.json'
 
     def __init__(self, dir_name='./', filename='test.json', destination='./dest'):
         """
@@ -412,7 +412,7 @@ class JsonFile(Basefile):
         :param filename:
         """
         super(JsonFile, self).__init__(dir_name, filename, destination)
-        self.stats['filetyp'] = self.__class__.file_type
+        self.stats['filetype'] = self.__class__.file_type
         self.data = self.__load_file__(os.path.join(dir_name, filename))
 
     def action(self):

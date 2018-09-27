@@ -55,13 +55,15 @@ class FileWalker:
         # for every file in this sub-folder
         for filename in os.listdir(current_src_dir):
             # perform action only on the given file ending
-            if filename.endswith(self.file_wrapper.file_typ):
+            if filename.endswith(self.file_wrapper.file_type):
                 # load the file
                 try:
                     wrapped_file = self.file_wrapper(current_src_dir, filename, current_dest_dir)
                     # perform the action method defined in the file_wrapper class
                     # save the new wave file to the destination folder defined in settings.DIR_TO_DEST
-                    self.open_files.append(wrapped_file.action())
+                    current_file = wrapped_file.action()
+                    # add file and stats for later statistics
+                    self.open_files.append(current_file)
                 except Exception as e:
                     logging.error('Error with file: {} in directory: {}'.format(filename, current_src_dir))
                     logging.error(e)
